@@ -287,7 +287,37 @@ final_flux_graphing <- final_flux %>%
 flux_over_time <- ggplot(final_flux_graphing, aes(x = Date, y = CH4_flux_g_ha_day,  colour =  Treatment))+
   geom_point()+
   geom_line()+
-  geom_errorbar(aes(ymin=CH4_flux_g_ha_day-CH4_flux_g_ha_day_se, ymax=CH4_flux_g_ha_day+CH4_flux_g_ha_day_se), size=0.5)
+  geom_errorbar(aes(ymin=CH4_flux_g_ha_day-CH4_flux_g_ha_day_se, ymax=CH4_flux_g_ha_day+CH4_flux_g_ha_day_se), size=0.5)+
+  
+  # First PSII Inhibitor (Propanil) @ 1x rate     
+  geom_vline(xintercept = as.POSIXct(c("2025-06-26")), 
+             linetype = "dashed", color = "blue") +
+  geom_text(aes(x = as.POSIXct("2025-06-26"), 
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                label = "PSII inhibitor 1x rate"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =4) +
+  # Second PSII Inhibitor (Propanil) @ 3x rate     
+  geom_vline(xintercept = as.POSIXct(c("2025-07-16")), 
+             linetype = "dashed", color = "blue") +
+  geom_text(aes(x = as.POSIXct("2025-07-16"), 
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                label = "PSII inhibitor 3x rate"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =4) +
+  # First defoliation     
+  geom_vline(xintercept = as.POSIXct(c("2025-08-04")), 
+             linetype = "dashed", color = "darkgreen") +
+  geom_text(aes(x = as.POSIXct("2025-08-04"), 
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                label = "1st defoliation"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =4) +
+  # Second defoliation     
+  geom_vline(xintercept = as.POSIXct(c("2025-08-18")), 
+             linetype = "dashed", color = "darkgreen") +
+  geom_text(aes(x = as.POSIXct("2025-08-18"), 
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                label = "2nd defoliation"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =4) 
+
 
 flux_over_time
 

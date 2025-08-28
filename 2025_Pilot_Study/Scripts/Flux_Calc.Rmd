@@ -293,35 +293,39 @@ flux_over_time <- ggplot(final_flux_graphing, aes(x = Date, y = CH4_flux_g_ha_da
   geom_vline(xintercept = as.POSIXct(c("2025-06-26")), 
              linetype = "dashed", color = "blue") +
   geom_text(aes(x = as.POSIXct("2025-06-26"), 
-                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -2500,
                 label = "PSII inhibitor 1x rate"),
-            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =4) +
+            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =6) +
   # Second PSII Inhibitor (Propanil) @ 3x rate     
   geom_vline(xintercept = as.POSIXct(c("2025-07-16")), 
              linetype = "dashed", color = "blue") +
   geom_text(aes(x = as.POSIXct("2025-07-16"), 
-                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -2500,
                 label = "PSII inhibitor 3x rate"),
-            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =4) +
+            angle = 90, vjust = -0.5, hjust = 0, color = "blue", size =6) +
   # First defoliation     
   geom_vline(xintercept = as.POSIXct(c("2025-08-04")), 
              linetype = "dashed", color = "darkgreen") +
   geom_text(aes(x = as.POSIXct("2025-08-04"), 
-                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
-                label = "1st defoliation"),
-            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =4) +
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -2500,
+                label = "1st defoliation (10 cm trim - approx)"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =6) +
   # Second defoliation     
   geom_vline(xintercept = as.POSIXct(c("2025-08-18")), 
              linetype = "dashed", color = "darkgreen") +
   geom_text(aes(x = as.POSIXct("2025-08-18"), 
-                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -1000,
-                label = "2nd defoliation"),
-            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =4) 
+                y = max(CH4_flux_g_ha_day, na.rm = TRUE) -2500,
+                label = "2nd defoliation (to top of leaf shealth)"),
+            angle = 90, vjust = -0.5, hjust = 0, color = "darkgreen", size =6) 
 
 
 flux_over_time
 
 ggsave(flux_over_time, filename = "../Figures/flux_over_time.jpg", height = 25, width = 25, units = "cm", dpi=400)
+
+ggplot(final_flux, aes(x = Date, y = CH4_flux_g_ha_day,  colour =  Treatment))+
+  geom_point()
+
 ```
 
 ## Create PDF with all the plots to visually inspect change in concentration over time is linear
@@ -465,4 +469,46 @@ dev.off()
 
 ```
 
+# Some prelimary analysis
 
+So it seems that if we throw everything into a linear model no effect lol - which make sense.
+
+```{r}
+final_flux$Date_Factor <- as.factor(final_flux$Date)
+
+model <- lm(CH4_flux_g_ha_day~Treatment*Date_Factor, data= final_flux)
+
+pls205_diagnostics(model)
+
+anova(model)
+
+str(final_flux)
+Treatment_means = emmeans(model,spec = 'Treatment',by = 'Date_Factor')
+Treatment_effects = contrast(Treatment_means, method = 'pairwise', adjust = "Tukey")
+summary(Treatment_effects)
+
+cld(Treatment_means, alpha = 0.05)
+```
+
+Now let's try to just subset out the last date? So if it is a T-test, there are differences!
+
+```{r}
+final_flux$Date_Factor <- as.factor(final_flux$Date)
+
+flux_defoliated <- final_flux %>% filter(as.Date(Date) == as.Date("2025-08-25"))
+
+model <- lm(CH4_flux_g_ha_day~Treatment, data= flux_defoliated)
+
+pls205_diagnostics(model)
+
+anova(model)
+
+Treatment_means = emmeans(model,spec = 'Treatment')
+Treatment_effects = contrast(Treatment_means, method = 'pairwise', adjust = "Tukey")
+summary(Treatment_effects)
+
+cld(Treatment_means, alpha = 0.05)
+
+
+t.test(CH4_flux_g_ha_day ~ Treatment, data = flux_defoliated, var.equal = TRUE)
+```

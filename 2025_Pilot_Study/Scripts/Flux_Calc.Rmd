@@ -221,6 +221,8 @@ sum(all_fluxes$r_squared < 0.85, na.rm = TRUE)
 #all obtained slopes are linear
 sum(all_fluxes$time_span < 60, na.rm = TRUE)
 #all slopes are obtained from at least 1 minute (>60s) of stable linear concentration increase
+sum(all_fluxes$time_span < 60, na.rm = TRUE)
+#all slopes are obtained from at least 1 minute (>60s) of stable linear concentration increase
 
 all_fluxes %>%
   filter(r_squared < 0.85)
@@ -335,7 +337,7 @@ licor_annotated <- licor_annotated %>%
   mutate(Date = as.Date(datetime))
 
 # Open PDF device
-pdf("../Figures/CH4_time_series_by_date.pdf", width = 10, height = 6)
+#pdf("../Figures/CH4_time_series_by_date.pdf", width = 10, height = 6)
 
 # Loop over every 2 dates (i.e., 2 plots per page)
 dates <- unique(licor_annotated$Date)
@@ -362,7 +364,7 @@ for (i in seq(1, length(dates), by = 2)) {
   print(p)
 }
 
-dev.off()
+#dev.off()
 ```
 
 ## Create graph with unannotated raw data to do side by side comparison
@@ -391,7 +393,7 @@ filtered_needed_data <- needed_data %>%
 unique_dates <- unique(filtered_needed_data$Date)
 
 # Start PDF device
-pdf("../Figures/unannotated_CH4_by_date_filtered.pdf", width = 11, height = 8.5)  # 2 plots per page
+#pdf("../Figures/unannotated_CH4_by_date_filtered.pdf", width = 11, height = 8.5)  # 2 plots per page
 
 # Loop through dates in pairs
 for (i in seq(1, length(unique_dates), by = 2)) {
@@ -418,7 +420,7 @@ for (i in seq(1, length(unique_dates), by = 2)) {
 }
 
 # Close PDF
-dev.off()
+#dev.off()
 ```
 
 # Additonal graph where annotated and non-annotated data are both present

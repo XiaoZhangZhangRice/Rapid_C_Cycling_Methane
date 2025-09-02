@@ -323,7 +323,7 @@ flux_over_time <- ggplot(final_flux_graphing, aes(x = Date, y = CH4_flux_g_ha_da
 
 flux_over_time
 
-ggsave(flux_over_time, filename = "../Figures/flux_over_time.jpg", height = 25, width = 25, units = "cm", dpi=400)
+ggsave(flux_over_time, filename = "../Figures/flux_over_time_rapidC.jpg", height = 25, width = 25, units = "cm", dpi=400)
 
 ggplot(final_flux, aes(x = Date, y = CH4_flux_g_ha_day,  colour =  Treatment))+
   geom_point()

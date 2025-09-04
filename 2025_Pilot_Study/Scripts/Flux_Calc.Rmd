@@ -10,7 +10,7 @@ editor_options:
 ---
 # Acknowledgement
 
-Heartfelt gratitude to Jack Lamb for providing a functional code architecture that enabled this to be developed.
+Heartfelt gratitude to Jack Lamb and Kelly Tucker for providing a functional code architecture that enabled this to be developed.
 
 # Brief overview
 
